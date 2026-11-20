@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARABO.EXE - PERSONAL SITE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-desktop: #008080;
+    --win-gray: #c0c0c0;
+    --win-dark: #808080;
+    --win-darker: #404040;
+    --win-light: #ffffff;
+    --title-purple: #4b0082;
+    --title-purple-grad: #8a2be2;
+    --text-main: #111111;
+    --font-lowres: "DotGothic16", "MS Gothic", "Osaka-Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg-desktop);
+    color: var(--text-main);
+    font-family: var(--font-lowres);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    padding: 16px 16px 48px;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+
+  .bevel-out {
+    background-color: var(--win-gray);
+    border-top: 2px solid var(--win-light);
+    border-left: 2px solid var(--win-light);
+    border-right: 2px solid var(--win-darker);
+    border-bottom: 2px solid var(--win-darker);
+    box-shadow: inset 1px 1px 0 var(--win-gray), inset -1px -1px 0 var(--win-dark);
+  }
+
+  .bevel-in {
+    background-color: #ffffff;
+    border-top: 2px solid var(--win-dark);
+    border-left: 2px solid var(--win-dark);
+    border-right: 2px solid var(--win-light);
+    border-bottom: 2px solid var(--win-light);
+    box-shadow: inset 1px 1px 0 var(--win-darker);
+  }
+
+  .window {
+    max-width: 760px;
+    margin: 0 auto 16px;
+    padding: 3px;
+  }
+
+  .title-bar {
+    background: linear-gradient(90deg, var(--title-purple), var(--title-purple-grad));
+    color: #ffffff;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  .title-buttons { display: flex; gap: 2px; }
+
+  .win-btn {
+    width: 16px;
+    height: 14px;
+    font-family: var(--font-lowres);
+    font-size: 10px;
+    line-height: 10px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000000;
+  }
+
+  button.action-btn {
+    padding: 4px 12px;
+    font-family: var(--font-lowres);
+    font-size: 12px;
+    cursor: pointer;
+    color: #000000;
+  }
+
+  button.tab-btn.active,
+  button.action-btn:active,
+  .win-btn:active {
+    border-top: 2px solid var(--win-dark);
+    border-left: 2px solid var(--win-dark);
+    border-right: 2px solid var(--win-light);
+    border-bottom: 2px solid var(--win-light);
+    box-shadow: inset 1px 1px 0 var(--win-darker);
+  }
+
+  button.tab-btn.active { background-color: #b0b0b0; }
+
+  button.action-btn:active,
+  .win-btn:active { padding-top: 5px; padding-left: 13px; }
+
+  .window-body { padding: 10px; }
+
+  .nav-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .content-panel {
+    padding: 12px;
+    min-height: 200px;
+    line-height: 1.7;
+  }
+
+  h1, h2 { margin: 8px 0 6px; font-size: 13px; font-weight: normal; }
+
+  .win-chip-wrap {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 3px;
+  }
+
+  .pop-btn {
+    padding: 1px 6px;
+    font-family: var(--font-lowres);
+    font-size: 10px;
+    cursor: pointer;
+    color: #000000;
+  }
+
+  .inline-emoji {
+    display: inline-block;
+    width: auto;
+    height: 1.15em;
+    vertical-align: -0.2em;
+    margin: 0 0.08em;
+    image-rendering: pixelated;
+  }
+
+  .emoji-missing, .img-missing {
+    display: inline-block;
+    background: #f0f0f0;
+    border: 1px dashed #666666;
+    padding: 1px 5px;
+    font-size: 11px;
+    color: #444444;
+    margin: 2px 0;
+  }
+
+  .inline-img {
+    display: block;
+    max-width: 100%;
+    max-height: 240px;
+    margin: 6px 0;
+    border: 2px solid var(--win-dark);
+    image-rendering: pixelated;
+  }
+
+  a.retro-link {
+    color: var(--title-purple);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  a.retro-link:hover {
+    background-color: var(--title-purple);
+    color: #ffffff;
+  }
+
+  .error-box {
+    color: #8b0000;
+    background: #fff0f0;
+    border: 1px solid #cc0000;
+    padding: 8px;
+  }
+
+  .status-bar {
+    margin-top: 8px;
+    padding: 3px 6px;
+    font-size: 11px;
+    color: #222222;
+  }
+
+  .sub-window {
+    position: fixed;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(460px, calc(100% - 32px));
+    padding: 3px;
+    z-index: 50;
+  }
+
+  .sub-window-body { padding: 10px; background-color: var(--win-gray); }
+
+  .sub-window-content {
+    padding: 10px;
+    min-height: 90px;
+    max-height: 55vh;
+    overflow: auto;
+    line-height: 1.7;
+  }
+
+  .taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+  }
+
+  .start-btn { padding: 2px 8px; font-size: 12px; }
+  .clock { padding: 2px 8px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+  <main class="window bevel-out">
+    <div class="title-bar">
+      <span>PARABO.EXE - PERSONAL SITE</span>
+      <div class="title-buttons">
+        <button type="button" class="win-btn bevel-out" title="最小化" onclick="toggleBody()">_</button>
+        <button type="button" class="win-btn bevel-out" title="リセット" onclick="loadTag('home')">□</button>
+      </div>
+    </div>
+
+    <div class="window-body" id="mainBody">
+      <nav class="nav-bar" aria-label="タグ切り替え">
+        <button type="button" id="btn-home" class="action-btn bevel-out tab-btn active" onclick="loadTag('home')">HOME</button>
+        <button type="button" id="btn-illust" class="action-btn bevel-out tab-btn" onclick="loadTag('illust')">ILLUST</button>
+        <button type="button" id="btn-game" class="action-btn bevel-out tab-btn" onclick="loadTag('game')">GAME</button>
+        <button type="button" id="btn-link" class="action-btn bevel-out tab-btn" onclick="loadTag('link')">LINK</button>
+      </nav>
+
+      <section class="content-panel bevel-in" id="contentPanel">LOADING...</section>
+      <div class="status-bar bevel-in" id="statusText">READY</div>
+    </div>
+  </main>
+
+  <div id="subWindowsContainer"></div>
+
+  <footer class="taskbar bevel-out">
+    <button type="button" class="action-btn bevel-out start-btn" onclick="loadTag('home')">START</button>
+    <div class="clock bevel-in" id="clock">12:00</div>
+  </footer>
+
+<script>
+  const JSON_PATHS = {
+    home: './home.json',
+    illust: './illust.json',
+    game: './game.json',
+    link: './link.json'
+  };
+
+  function showError(msg) {
+    document.getElementById('contentPanel').innerHTML =
+      '<div class="error-box">ERROR: ' + escapeHtml(msg) + '</div>';
+    document.getElementById('statusText').textContent = 'ERROR: ' + msg;
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[s]));
+  }
+
+  async function loadTag(tag) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById('btn-' + tag);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const path = JSON_PATHS[tag];
+    document.getElementById('statusText').textContent = 'LOADING ' + path + '...';
+
+    try {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (!res.ok) throw new Error('JSON NOT FOUND (' + path + ' / HTTP ' + res.status + ')');
+      const data = await res.json();
+      renderData(data);
+      document.getElementById('statusText').textContent = 'LOADED: ' + path;
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  function renderData(data) {
+    const panel = document.getElementById('contentPanel');
+    panel.innerHTML = '';
+
+    if (typeof data === 'string') {
+      panel.appendChild(parseMainWithWindows(data));
+      return;
+    }
+
+    if (Array.isArray(data)) {
+      panel.appendChild(parseMainWithWindows(data.join('\n')));
+      return;
+    }
+
+    if (data && typeof data === 'object') {
+      if (data.title) {
+        const h1 = document.createElement('h1');
+        h1.textContent = String(data.title);
+        panel.appendChild(h1);
+      }
+
+      if (Array.isArray(data.entries)) {
+        data.entries.forEach((entry) => {
+          if (entry && typeof entry === 'object') {
+            if (entry.heading) {
+              const h2 = document.createElement('h2');
+              h2.textContent = String(entry.heading);
+              panel.appendChild(h2);
+            }
+            if (entry.body !== undefined) {
+              panel.appendChild(parseMainWithWindows(String(entry.body)));
+            }
+          } else if (entry !== undefined) {
+            panel.appendChild(parseMainWithWindows(String(entry)));
+          }
+        });
+        return;
+      }
+
+      if (data.body !== undefined) {
+        panel.appendChild(parseMainWithWindows(String(data.body)));
+        return;
+      }
+    }
+
+    panel.textContent = '';
+  }
+
+  function parseMainWithWindows(text) {
+    const frag = document.createDocumentFragment();
+    const regex = /«([\s\S]*?)»/g;
+    let lastIndex = 0;
+    let winIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        frag.appendChild(parseRichText(text.slice(lastIndex, match.index)));
+      }
+
+      winIndex += 1;
+      const num = winIndex;
+      const winContent = match[1];
+
+      const wrap = document.createElement('span');
+      wrap.className = 'win-chip-wrap';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pop-btn bevel-out';
+      btn.textContent = '[WIN ' + num + ']';
+      btn.onclick = () => openSubWindow('WIN_' + num, winContent);
+
+      wrap.appendChild(btn);
+      frag.appendChild(wrap);
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      frag.appendChild(parseRichText(text.slice(lastIndex)));
+    }
+
+    return frag;
+  }
+
+  function normalizeRelSrc(raw) {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('/')) return '.' + trimmed;
+    return trimmed;
+  }
+
+  function isEmojiToken(raw) {
+    const t = raw.trim();
+    return t.startsWith('/emoji/') || t.startsWith('emoji/') || t.startsWith('./emoji/');
+  }
+
+  function parseRichText(text) {
+    const frag = document.createDocumentFragment();
+    const lines = String(text).split(/\\n|\r?\n/);
+
+    lines.forEach((line, idx) => {
+      if (idx > 0) frag.appendChild(document.createElement('br'));
+
+      const tokenRegex = /(<[^<>]+>|https?:\/\/[^\s<>]+)/g;
+      let lastIndex = 0;
+      let match;
+
+      while ((match = tokenRegex.exec(line)) !== null) {
+        if (match.index > lastIndex) {
+          frag.appendChild(document.createTextNode(line.slice(lastIndex, match.index)));
+        }
+
+        const token = match[0];
+        if (token.startsWith('<') && token.endsWith('>')) {
+          const inner = token.slice(1, -1).trim();
+          const img = document.createElement('img');
+          const isEmoji = isEmojiToken(inner);
+          img.src = normalizeRelSrc(inner);
+          img.alt = inner;
+          img.className = isEmoji ? 'inline-emoji' : 'inline-img';
+          img.onerror = function () {
+            const span = document.createElement('span');
+            span.className = isEmoji ? 'emoji-missing' : 'img-missing';
+            span.textContent = '[' + inner + ']';
+            this.replaceWith(span);
+          };
+          frag.appendChild(img);
+        } else {
+          const a = document.createElement('a');
+          a.href = token;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'retro-link';
+          a.textContent = token;
+          frag.appendChild(a);
+        }
+
+        lastIndex = tokenRegex.lastIndex;
+      }
+
+      if (lastIndex < line.length) {
+        frag.appendChild(document.createTextNode(line.slice(lastIndex)));
+      }
+    });
+
+    return frag;
+  }
+
+  function closeSubWindow() {
+    document.getElementById('subWindowsContainer').innerHTML = '';
+  }
+
+  function openSubWindow(title, rawContent) {
+    const container = document.getElementById('subWindowsContainer');
+    container.innerHTML = '';
+
+    const win = document.createElement('div');
+    win.className = 'sub-window bevel-out';
+
+    const tBar = document.createElement('div');
+    tBar.className = 'title-bar';
+    const tSpan = document.createElement('span');
+    tSpan.textContent = title + '.WIN';
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'win-btn bevel-out';
+    closeBtn.textContent = '×';
+    closeBtn.onclick = closeSubWindow;
+    tBar.append(tSpan, closeBtn);
+
+    const wBody = document.createElement('div');
+    wBody.className = 'sub-window-body';
+    const contentBox = document.createElement('div');
+    contentBox.className = 'bevel-in sub-window-content';
+    contentBox.appendChild(parseRichText(rawContent));
+
+    const footerRow = document.createElement('div');
+    footerRow.style.marginTop = '8px';
+    footerRow.style.textAlign = 'right';
+    const okBtn = document.createElement('button');
+    okBtn.type = 'button';
+    okBtn.className = 'action-btn bevel-out';
+    okBtn.textContent = 'CLOSE';
+    okBtn.onclick = closeSubWindow;
+    footerRow.appendChild(okBtn);
+
+    wBody.append(contentBox, footerRow);
+    win.append(tBar, wBody);
+    container.appendChild(win);
+    document.getElementById('statusText').textContent = 'OPENED WINDOW: ' + title;
+  }
+
+  function toggleBody() {
+    const body = document.getElementById('mainBody');
+    const isHidden = body.style.display === 'none';
+    body.style.display = isHidden ? 'block' : 'none';
+    document.getElementById('statusText').textContent = isHidden ? 'RESTORED' : 'MINIMIZED';
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  }
+
+  loadTag('home');
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+</body>
+</html>
